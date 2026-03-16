@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Variabel untuk memudahkan konfigurasi
+DOCKER_USERNAME="rudyekoprasetya"
+IMAGE_NAME="item-app"
+TAG="v1"
+
+# 1. Membuat Docker image dari Dockerfile
+# Mengasumsikan script dijalankan di folder yang sama dengan Dockerfile
+echo "--- Building Docker Image ---"
+docker build -t $IMAGE_NAME:$TAG .
+
+# 2. Melihat daftar image di lokal
+echo "--- List of Local Images ---"
+docker images
+
+# 3. Mengubah nama image (Tagging) agar sesuai format Docker Hub
+# Format: username/repository:tag
+echo "--- Tagging Image for Docker Hub ---"
+docker tag $IMAGE_NAME:$TAG $DOCKER_USERNAME/$IMAGE_NAME:$TAG
+
+# 4. Login ke Docker Hub via Terminal
+# Catatan: Untuk keamanan di server production, gunakan --password-stdin
+echo "--- Logging into Docker Hub ---"
+echo $PASSWORD_DOCKER_HUB | docker login -u $DOCKER_USERNAME --password-stdin
+
+# 5. Mengunggah image ke Docker Hub
+echo "--- Pushing Image to Docker Hub ---"
+docker push $DOCKER_USERNAME/$IMAGE_NAME:$TAG
+
+echo "--- Process Completed Successfully! ---"
